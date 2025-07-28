@@ -1,10 +1,13 @@
 {
   "name": "Vaccin Rage DZ",
   "short_name": "VaccinRage",
-  "start_url": ".",
+  "description": "تطبيق لحساب مواعيد تطعيم داء الكلب",
+  "lang": "fr-DZ",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0d47a1",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
