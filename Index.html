@@ -1,0 +1,288 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Vaccin Rage - Calculateur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#003366">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef7ff;
+      margin: 0;
+      padding: 15px;
+      text-align: center;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    select, input, button {
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+      width: 95%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #003366;
+      color: white;
+      cursor: pointer;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 10px;
+    }
+    .addCal {
+      background-color: #4CAF50;
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    .hidden {
+      display: none;
+    }
+    .serum-result {
+      background-color: #f8f9fa;
+      padding: 15px;
+      margin: 20px auto;
+      border-radius: 5px;
+      width: 90%;
+      max-width: 400px;
+    }
+    .grade-section {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+<h2>Calculateur de Vaccination Antirabique</h2>
+
+<!-- Section Calcul de Sérum -->
+<div class="serum-section">
+  <h3>Calcul de Sérum Antirabique</h3>
+  <label>Poids du patient (kg):</label><br>
+  <input type="number" id="patientWeight" min="1" step="0.1"><br>
+  <button onclick="calculateSerum()">Calculer la dose</button>
+  
+  <div id="serumResult" class="serum-result hidden">
+    <h4>Résultat:</h4>
+    <p id="serumUI"></p>
+    <p id="serumCC"></p>
+  </div>
+</div>
+
+<!-- Section Calendrier Vaccinal -->
+<h3>Calendrier Vaccinal</h3>
+<div>
+  <label>Type de vaccin:</label><br>
+  <select id="vaccineType" onchange="showProtocolOptions()">
+    <option value="">-- Choisir le type --</option>
+    <option value="tissulaire">Vaccin tissulaire (Tissulaire)</option>
+    <option value="cellulaire">Vaccin cellulaire (Cellulaire)</option>
+  </select>
+</div>
+
+<div id="protocolDiv" class="hidden">
+  <label>Protocole:</label><br>
+  <select id="protocol">
+    <option value="">-- Choisir le protocole --</option>
+  </select>
+</div>
+
+<div id="gradeDiv" class="grade-section hidden">
+  <label>Grade de l'exposition:</label><br>
+  <select id="exposureGrade">
+    <option value="">-- Choisir le grade --</option>
+    <option value="grade2">Grade 2</option>
+    <option value="grade3">Grade 3</option>
+  </select>
+</div>
+
+<div>
+  <label>Date de la première dose (J0):</label><br>
+  <input type="date" id="startDate"><br>
+  <button onclick="calculateSchedule()">Calculer le calendrier</button>
+</div>
+
+<table id="resultTable" class="hidden">
+  <thead>
+    <tr>
+      <th>Jour</th>
+      <th>Date</th>
+      <th>Détails</th>
+      <th>Rappel</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+function calculateSerum() {
+  const weight = parseFloat(document.getElementById("patientWeight").value);
+  
+  if (!weight || weight <= 0) {
+    return alert("Veuillez entrer un poids valide");
+  }
+
+  const ui = weight * 40;
+  const cc = ui / 200;
+  
+  document.getElementById("serumUI").innerHTML = `Dose requise: <strong>${ui.toFixed(0)} UI</strong>`;
+  document.getElementById("serumCC").innerHTML = `Volume à injecter: <strong>${cc.toFixed(2)} cc</strong>`;
+  document.getElementById("serumResult").classList.remove("hidden");
+}
+
+const protocols = {
+  tissulaire: {
+    grade2: {
+      name: "Protocole Tissulaire - Grade 2",
+      schedule: [
+        { day: 0, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 1, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 2, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 3, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 4, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 5, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 6, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 10, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 14, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 29, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 90, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" }
+      ]
+    },
+    grade3: {
+      name: "Protocole Tissulaire - Grade 3",
+      schedule: [
+        { day: 0, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 1, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 2, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 3, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 4, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 5, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 6, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 10, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 14, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 24, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 34, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
+        { day: 90, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" }
+      ]
+    }
+  },
+  cellulaire: {
+    zagreb: {
+      name: "Protocole Zagreb",
+      schedule: [
+        { day: 0, detail: "2 injections (2 ml)" },
+        { day: 7, detail: "1 injection SC" },
+        { day: 21, detail: "1 injection SC" }
+      ]
+    },
+    essen: {
+      name: "Protocole Essen",
+      schedule: [
+        { day: 0, detail: "1 injection SC" },
+        { day: 3, detail: "1 injection SC" },
+        { day: 7, detail: "1 injection SC" },
+        { day: 14, detail: "1 injection SC" },
+        { day: 28, detail: "1 injection SC" }
+      ]
+    }
+  }
+};
+
+function showProtocolOptions() {
+  const vaccineType = document.getElementById("vaccineType").value;
+  const protocolDiv = document.getElementById("protocolDiv");
+  const protocolSelect = document.getElementById("protocol");
+  const gradeDiv = document.getElementById("gradeDiv");
+  
+  protocolSelect.innerHTML = '<option value="">-- Choisir le protocole --</option>';
+  gradeDiv.classList.add("hidden");
+  
+  if (vaccineType === "tissulaire") {
+    protocolDiv.classList.add("hidden");
+    gradeDiv.classList.remove("hidden");
+  } else if (vaccineType === "cellulaire") {
+    protocolDiv.classList.remove("hidden");
+    gradeDiv.classList.add("hidden");
+    protocolSelect.innerHTML += `
+      <option value="zagreb">Zagreb (2 injections à J0)</option>
+      <option value="essen">Essen (1 injection à J0)</option>
+    `;
+  } else {
+    protocolDiv.classList.add("hidden");
+    gradeDiv.classList.add("hidden");
+  }
+}
+
+function calculateSchedule() {
+  const vaccineType = document.getElementById("vaccineType").value;
+  const protocol = document.getElementById("protocol").value;
+  const grade = document.getElementById("exposureGrade").value;
+  const startDate = document.getElementById("startDate").value;
+  
+  // Validation des entrées
+  if (!vaccineType || !startDate) {
+    return alert("Veuillez sélectionner le type de vaccin et la date de première dose");
+  }
+  
+  if (vaccineType === "tissulaire" && !grade) {
+    return alert("Veuillez sélectionner le grade d'exposition pour le vaccin tissulaire");
+  }
+  
+  if (vaccineType === "cellulaire" && !protocol) {
+    return alert("Veuillez sélectionner le protocole pour le vaccin cellulaire");
+  }
+
+  const j0 = new Date(startDate);
+  const tbody = document.querySelector("#resultTable tbody");
+  tbody.innerHTML = "";
+  
+  let schedule = [];
+  
+  if (vaccineType === "tissulaire") {
+    schedule = protocols.tissulaire[grade].schedule;
+  } else {
+    schedule = protocols.cellulaire[protocol].schedule;
+  }
+
+  schedule.forEach(item => {
+    const date = new Date(j0);
+    date.setDate(j0.getDate() + item.day);
+    
+    const dateStr = date.toISOString().slice(0,10).replace(/-/g, '');
+    const title = `Rappel Vaccin Rage J${item.day}`;
+    const details = item.detail;
+    const href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dateStr}/${dateStr}&details=${encodeURIComponent(details)}`;
+    
+    tbody.innerHTML += `
+      <tr>
+        <td>J${item.day}</td>
+        <td>${date.toLocaleDateString('fr-FR')}</td>
+        <td>${item.detail}</td>
+        <td><a href="${href}" target="_blank"><button class="addCal">+ Ajouter</button></a></td>
+      </tr>`;
+  });
+
+  document.getElementById("resultTable").classList.remove("hidden");
+}
+
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker enregistré'))
+      .catch(err => console.log('Échec enregistrement:', err));
+  });
+}
+</script>
+</body>
+</html>
