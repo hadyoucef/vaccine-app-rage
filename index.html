@@ -1,12 +1,14 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>Vaccin Rage - Calculateur</title>
+  <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#003366">
+  <link rel="icon" href="icon-192.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -128,14 +130,11 @@
 <script>
 function calculateSerum() {
   const weight = parseFloat(document.getElementById("patientWeight").value);
-  
   if (!weight || weight <= 0) {
     return alert("Veuillez entrer un poids valide");
   }
-
   const ui = weight * 40;
   const cc = ui / 200;
-  
   document.getElementById("serumUI").innerHTML = `Dose requise: <strong>${ui.toFixed(0)} UI</strong>`;
   document.getElementById("serumCC").innerHTML = `Volume à injecter: <strong>${cc.toFixed(2)} cc</strong>`;
   document.getElementById("serumResult").classList.remove("hidden");
@@ -229,16 +228,15 @@ function calculateSchedule() {
   const protocol = document.getElementById("protocol").value;
   const grade = document.getElementById("exposureGrade").value;
   const startDate = document.getElementById("startDate").value;
-  
-  // Validation des entrées
+
   if (!vaccineType || !startDate) {
     return alert("Veuillez sélectionner le type de vaccin et la date de première dose");
   }
-  
+
   if (vaccineType === "tissulaire" && !grade) {
     return alert("Veuillez sélectionner le grade d'exposition pour le vaccin tissulaire");
   }
-  
+
   if (vaccineType === "cellulaire" && !protocol) {
     return alert("Veuillez sélectionner le protocole pour le vaccin cellulaire");
   }
@@ -246,9 +244,9 @@ function calculateSchedule() {
   const j0 = new Date(startDate);
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
-  
+
   let schedule = [];
-  
+
   if (vaccineType === "tissulaire") {
     schedule = protocols.tissulaire[grade].schedule;
   } else {
@@ -258,12 +256,12 @@ function calculateSchedule() {
   schedule.forEach(item => {
     const date = new Date(j0);
     date.setDate(j0.getDate() + item.day);
-    
+
     const dateStr = date.toISOString().slice(0,10).replace(/-/g, '');
     const title = `Rappel Vaccin Rage J${item.day}`;
     const details = item.detail;
     const href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dateStr}/${dateStr}&details=${encodeURIComponent(details)}`;
-    
+
     tbody.innerHTML += `
       <tr>
         <td>J${item.day}</td>
@@ -277,11 +275,9 @@ function calculateSchedule() {
 }
 
 if('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('Service Worker enregistré'))
-      .catch(err => console.log('Échec enregistrement:', err));
-  });
+  navigator.serviceWorker.register('service-worker.js')
+    .then(reg => console.log('Service Worker enregistré', reg))
+    .catch(err => console.error('Échec enregistrement du Service Worker', err));
 }
 </script>
 </body>
