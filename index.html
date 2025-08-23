@@ -2,13 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Vaccin Rage - Calculateur</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#003366">
-  <link rel="icon" href="icon-192.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -130,13 +128,28 @@
 <script>
 function calculateSerum() {
   const weight = parseFloat(document.getElementById("patientWeight").value);
+  
   if (!weight || weight <= 0) {
     return alert("Veuillez entrer un poids valide");
   }
-  const ui = weight * 40;
-  const cc = ui / 200;
-  document.getElementById("serumUI").innerHTML = `Dose requise: <strong>${ui.toFixed(0)} UI</strong>`;
-  document.getElementById("serumCC").innerHTML = `Volume à injecter: <strong>${cc.toFixed(2)} cc</strong>`;
+
+  // حساب الجرعة النظرية
+  const theoreticalUi = weight * 40;
+  
+  // تحديد الجرعة النهائية مع الحد الأدنى (800 UI) والحد الأقصى (3000 UI)
+  const finalUi = Math.max(800, Math.min(3000, theoreticalUi));
+  
+  // حساب الحجم بالسي سي
+  const cc = finalUi / 200;
+  
+  // عرض النتائج
+  document.getElementById("serumUI").innerHTML = 
+    `Dose théorique: <strong>${theoreticalUi.toFixed(0)} UI</strong><br>
+     Dose à administrer: <strong>${finalUi.toFixed(0)} UI</strong> (800-3000 UI)`;
+  
+  document.getElementById("serumCC").innerHTML = 
+    `Volume à injecter: <strong>${cc.toFixed(2)} cc</strong>`;
+  
   document.getElementById("serumResult").classList.remove("hidden");
 }
 
@@ -145,34 +158,34 @@ const protocols = {
     grade2: {
       name: "Protocole Tissulaire - Grade 2",
       schedule: [
-        { day: 0, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 1, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 2, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 3, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 4, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 5, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 6, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 10, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 14, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 29, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 90, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" }
+        { day: 0, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 1, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 2, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 3, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 4, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 5, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 6, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 10, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 14, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 29, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 90, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" }
       ]
     },
     grade3: {
       name: "Protocole Tissulaire - Grade 3",
       schedule: [
-        { day: 0, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 1, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 2, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 3, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 4, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 5, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 6, detail: "SC périombilical: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 10, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 14, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 24, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 34, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" },
-        { day: 90, detail: "SC: >5 ans: 0.25 ml / <5 ans: 0.1 ml" }
+        { day: 0, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 1, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 2, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 3, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 4, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 5, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 6, detail: "SC périombilical: >5 ans: 2 ml / ≤5 ans: 1 ml" },
+        { day: 10, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 14, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 24, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 34, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" },
+        { day: 90, detail: "SC: >5 ans: 0.25 ml / ≤5 ans: 0.1 ml" }
       ]
     }
   },
@@ -228,15 +241,16 @@ function calculateSchedule() {
   const protocol = document.getElementById("protocol").value;
   const grade = document.getElementById("exposureGrade").value;
   const startDate = document.getElementById("startDate").value;
-
+  
+  // Validation des entrées
   if (!vaccineType || !startDate) {
     return alert("Veuillez sélectionner le type de vaccin et la date de première dose");
   }
-
+  
   if (vaccineType === "tissulaire" && !grade) {
     return alert("Veuillez sélectionner le grade d'exposition pour le vaccin tissulaire");
   }
-
+  
   if (vaccineType === "cellulaire" && !protocol) {
     return alert("Veuillez sélectionner le protocole pour le vaccin cellulaire");
   }
@@ -244,9 +258,9 @@ function calculateSchedule() {
   const j0 = new Date(startDate);
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
-
+  
   let schedule = [];
-
+  
   if (vaccineType === "tissulaire") {
     schedule = protocols.tissulaire[grade].schedule;
   } else {
@@ -256,12 +270,12 @@ function calculateSchedule() {
   schedule.forEach(item => {
     const date = new Date(j0);
     date.setDate(j0.getDate() + item.day);
-
+    
     const dateStr = date.toISOString().slice(0,10).replace(/-/g, '');
     const title = `Rappel Vaccin Rage J${item.day}`;
     const details = item.detail;
     const href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dateStr}/${dateStr}&details=${encodeURIComponent(details)}`;
-
+    
     tbody.innerHTML += `
       <tr>
         <td>J${item.day}</td>
@@ -275,9 +289,11 @@ function calculateSchedule() {
 }
 
 if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(reg => console.log('Service Worker enregistré', reg))
-    .catch(err => console.error('Échec enregistrement du Service Worker', err));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker enregistré'))
+      .catch(err => console.log('Échec enregistrement:', err));
+  });
 }
 </script>
 </body>
