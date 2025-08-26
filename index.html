@@ -105,6 +105,73 @@
       border-radius: 4px;
       font-size: 0.9rem;
     }
+    .concentration-info {
+      background: #f3e5f5;
+      border-left: 4px solid #9c27b0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .cellulaire-info {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .additional-info {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .contact-info {
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .contact-info a {
+      color: var(--brand);
+      text-decoration: none;
+    }
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+    .source-link {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .concentration-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -132,9 +199,23 @@
       <div>
         <label for="rigConc">Concentration (IU/ml)</label>
         <input type="number" id="rigConc" min="50" step="1" value="200" />
-        <p class="note">Exemples: eRIG 200 IU/ml; hRIG 150–300 IU/ml selon produit.</p>
+        <div class="concentration-link" onclick="toggleConcentrationDetails()">Où trouver la concentration? (Cliquez pour voir)</div>
       </div>
     </div>
+    
+    <div class="concentration-info" onclick="toggleConcentrationDetails()">
+      <strong>Où trouver la concentration? (Cliquez pour voir)</strong>
+      <div id="concentrationDetails" class="precautions-details hidden">
+        <p>La concentration est indiquée sur l'emballage du sérum. Par exemple:</p>
+        <ul>
+          <li><strong>Equirab:</strong> 1000 UI/5ml (200 UI/ml)</li>
+          <li><strong>Abhayrab:</strong> 1500 UI/5ml (300 UI/ml)</li>
+          <li><strong>Berirab:</strong> 1500 UI/5ml (300 UI/ml)</li>
+        </ul>
+        <p>Recherchez la mention "UI/ml" sur le flacon ou la boîte.</p>
+      </div>
+    </div>
+    
     <div class="actions">
       <button class="btn" id="btnSerum">Calculer la dose</button>
       <button class="btn secondary" id="btnResetSerum" type="button">Réinitialiser</button>
@@ -149,7 +230,7 @@
     </div>
     
     <div class="emergency-info" onclick="toggleEmergencyDetails()">
-      <strong>En cas de réaction anaphylactique (اضغط للإظهار)</strong>
+      <strong>En cas de réaction anaphylactique (Cliquez pour voir)</strong>
       <div id="emergencyDetails" class="emergency-details hidden">
         <ol>
           <li>Coucher la personne sur le dos les jambes surélevées</li>
@@ -164,7 +245,7 @@
     </div>
 
     <div class="precautions-info" onclick="togglePrecautionsDetails()">
-      <strong>Précautions et Considérations (IGAR) (اضغط للإظهار)</strong>
+      <strong>Précautions et Considérations (IGAR) (Cliquez pour voir)</strong>
       <div id="precautionsDetails" class="precautions-details hidden">
         <ul>
           <li><strong>Le test de tolérance n'est plus recommandé</strong></li>
@@ -173,8 +254,8 @@
           <li>Les IGAR ne doivent pas être administrées dans la même seringue que le vaccin antirabique</li>
           <li>Avant d'injecter le produit il faut tirer légèrement le piston de la seringue en arrière pour être certain que l'aiguille ne se trouve pas dans un vaisseau sanguin</li>
           <li>La majorité voire la totalité de la dose d'IGAR doit être infiltrée en profondeur et autour de la plaie en évitant un syndrome des loges</li>
-          <li>L'injection de la dose restante d'IGAR par voie IM est indiquée en dépit d'un bénéfice limité. Privilégier l'infiltration en cas de stock limité</li>
-          <li>Une plaie surinfectée après morsure ne constitue pas une contre-indication à une infiltration d'IGAR</li>
+          <li>L'injection de la dose restante d'IGAR par voie IM est indiquée en dépit d'un bénéfice limité. Privilégier l'infiltration en case de stock limité</li>
+          <li>Une plaie surinfectée après morsure ne constitute pas une contre-indication à une infiltration d'IGAR</li>
           <li>Pour les morsures et griffures devenues invisibles ou indétectables, les IGAR sont injectées autour du site d'exposition</li>
           <li>Dans le cas d'une exposition des muqueuses, rincer avec les IGAR diluées, infiltrer autour de la muqueuse et injecter le reste de la dose en IM</li>
           <li>Il n'est pas recommandé d'administrer les IGAR pour les personnes immunocompétentes ayants reçus une vaccination documentée en pré ou post-exposition par un vaccin cellulaire (2 doses ou plus) même plusieurs années après une première vaccination. L'administration des IGAR dans cette situation peut être un facteur inhibant la montée rapide des anticorps antirabiques secondaires au rappel vaccinal</li>
@@ -236,11 +317,37 @@
     <div id="intradermiqueNote" class="special-note hidden">
       <strong>NB:</strong> Pour le protocole intradermique, la dose est de 0.1 ml par site d'injection.
     </div>
+    
+    <div class="cellulaire-info" onclick="toggleCellulaireDetails()">
+      <strong>Info sur le protocole cellulaire (Cliquez pour voir)</strong>
+      <div id="cellulaireDetails" class="precautions-details hidden">
+        <p><strong>(a)</strong> La date de début de la vaccination (J0)</p>
+        <p><strong>(b)</strong> Le vaccin sera injecté :</p>
+        <ul>
+          <li>Dans le muscle deltoïde chez l'adulte et l'enfant ≥ 2 ans</li>
+          <li>Dans la face antérolatérale de la cuisse chez l'enfant < 2 ans</li>
+        </ul>
+        <p><strong>(c)</strong> Dans deux sites différents</p>
+        <p><strong>(d)</strong> Causes d'immunodépression importante:</p>
+        <ul>
+          <li>Déficience immunitaire congénitale ou acquise (ex.: syndrome de Di George, hypogammaglobulinémie, cancers, radiothérapie, chimiothérapie, corticostéroïdes, infection par le VIH)</li>
+        </ul>
+        <p><strong>(e)</strong> Précautions et Considérations</p>
+        <ul>
+          <li>Il n'existe pas de contre-indication à la vaccination post exposition</li>
+          <li>Pour les personnes ayants déjà reçus une PPE complète documentée réexposées au risque rabique dans les 03 mois suivants, seul le traitement de la plaie ainsi qu'une éventuelle antibioprophylaxie sont requis</li>
+          <li>Pour les personnes immunodéprimées exposées au risque rabique de catégorie II ou III, administrer une série complète de VAR, en plus des IGAR, mêmes si elles ont déjà été immunisées; une sérologie antirabique de contrôle est effectuée 2 à 4 semaines après la vaccination antirabique. Si le résultat de celle-ci est inférieur à 0,5 UI/ml ajouter une dose de vaccin</li>
+          <li>Il ne faut pas vacciner dans le même site que les IGAR car l'immunisation passive pourrait diminuer la réponse vaccinale</li>
+          <li>Avant d'injecter le produit il faut tirer légèrement le piston de la seringue en arrière pour être certain que l'aiguille ne se trouve pas dans un vaisseau sanguin</li>
+          <li>Les sujets qui interrompent une série de PPE après l'administration d'au moins deux doses de vaccin et qui sont réexposées, seront considérées comme ayant reçu une vaccination préexposition</li>
+          <li>Il y a lieu de maintenir le sujet en observation pendant au moins 15 minutes et ce, afin de faire face à d'éventuelles manifestations secondaires</li>
+        </ul>
+      </div>
+    </div>
 
     <div class="actions">
       <button class="btn" id="btnSchedule">Calculer le calendrier</button>
       <button class="btn secondary" id="btnResetSchedule" type="button">Effacer</button>
-      <button class="btn success" id="btnPrint" type="button">Imprimer / PDF</button>
     </div>
 
     <div id="advice" class="note" aria-live="polite"></div>
@@ -258,7 +365,90 @@
     </table>
   </div>
 
-  <div class="footer">« Vaccin Rage DZ » — outil éducatif, ne remplace pas le jugement clinique. ©2025</div>
+  <!-- SECTION: INFORMATIONS ADDITIONNELLES -->
+  <div class="card">
+    <h2>Informations Additionnelles</h2>
+    
+    <div class="additional-info" onclick="toggleInterchangeabiliteDetails()">
+      <strong>Interchangeabilité ou retard (Cliquez pour voir)</strong>
+      <div id="interchangeabiliteDetails" class="precautions-details hidden">
+        <p><strong>1. Vaccin cellulaire</strong></p>
+        <p>Un changement de la voie d'administration ou le produit vaccinal au cours d'une prophylaxie pré ou post-exposition est acceptable si un tel changement est inévitable. Il n'est pas nécessaire de recommencer la série d'injections, la vaccination doit se poursuivre selon le schéma de la nouvelle voie d'administration.</p>
+        <p>Si l'administration d'une dose est omise ou retardée, il faut l'administrer dès que possible et ne pas recommencer la vaccination depuis le début. Tout le calendrier est alors décalé de sorte que l'intervalle correct prévu entre les doses restantes est maintenu.</p>
+        
+        <p><strong>2. Vaccin tissulaire</strong></p>
+        <p>Pour tout retard à la vaccination de more de 24 heures, il faut reprendre la vaccination depuis le début avec, de préférence avec le VAR préparé sur culture cellulaire.</p>
+      </div>
+    </div>
+
+    <div class="additional-info" onclick="toggleFemmeEnceinteDetails()">
+      <strong>Chez la femme enceinte ou allaitante (Cliquez pour voir)</strong>
+      <div id="femmeEnceinteDetails" class="precautions-details hidden">
+        <p>Il n'y a pas de contre-indication à la vaccination en PPE car le risque vital est en jeu cependant il faut différer la vaccination en PPrEx.</p>
+      </div>
+    </div>
+
+    <div class="additional-info" onclick="toggleCoadministrationDetails()">
+      <strong>Co-administration (Cliquez pour voir)</strong>
+      <div id="coadministrationDetails" class="precautions-details hidden">
+        <p>Les vaccins contre la rage peuvent être administrés en même temps que d'autres vaccins vivants inactivés, en utilisant des seringues séparées et des sites d'injection différents.</p>
+      </div>
+    </div>
+
+    <div class="additional-info" onclick="toggleChloroquineDetails()">
+      <strong>Prise concomitante de chloroquine et d'hydroxychloroquine (Cliquez pour voir)</strong>
+      <div id="chloroquineDetails" class="precautions-details hidden">
+        <p>Il n'y a pas de contre-indication pour les personnes recevant un traitement à la chloroquine ou à l'hydroxychloroquine. Toutefois, il est préférable de terminer la PPrEx avant le début du traitement de ces deux médicaments.</p>
+      </div>
+    </div>
+
+    <div class="additional-info" onclick="toggleSoinsLocauxDetails()">
+      <strong>Soins locaux (Cliquez pour voir)</strong>
+      <div id="soinsLocauxDetails" class="precautions-details hidden">
+        <p>Les soins locaux doivent être entrepris aussi rapidement que possible, même quand le sujet consulte tardivement, et dans tous les cas, quelle que soit la nature du contact. Ils agissent mécaniquement en réduisant la quantité des virus et en inactivant ceux qui demeurent dans la plaie par leur action désinfectante. Ils interviennent dans la prévention de la surinfection bactérienne.</p>
+        <p>Ces soins consistent à:</p>
+        <p><strong>a) Pour les plaies:</strong></p>
+        <ul>
+          <li>nettoyer en profondeur la plaie à l'eau sous un jet d'eau à forte pression pendant au moins 15 minutes avec du savon et rincer abondamment;</li>
+          <li>appliquer une solution antiseptique iodée.</li>
+        </ul>
+        <p><strong>b) Pour les muqueuses:</strong></p>
+        <ul>
+          <li>laver abondamment à l'eau ou au sérum physiologique.</li>
+        </ul>
+        <p>Les autres traitements tels que le vaccin antidiphtérique antitétanique (DT pour l'enfant ou dT pour l'adulte) et le sérum antitétanique et les antibiotiques seront administrés en cas de risque infectieux.</p>
+      </div>
+    </div>
+
+    <div class="additional-info" onclick="toggleMPVIDetails()">
+      <strong>Manifestations Post-Vaccinales Indésirables (MPVI) (Cliquez pour voir)</strong>
+      <div id="mpviDetails" class="precautions-details hidden">
+        <p>Les réactions le plus fréquemment observées après vaccination antirabique sont les réactions au site d'injection (rougeur, induration ou douleur, érythème, prurit) qui régressent après traitement aux antihistaminiques. D'autres réactions bénignes peuvent survenir, telles que des céphalées, des nausées, des douleurs abdominales, des arthralgies et des vertiges.</p>
+        <p>Des effets d'intensité modérée tels que des frissons, des douleurs aux articulations et des épisodes fébriles peuvent également survenir après l'injection de rappel. Des cas rares de syndrome de Guillain-Barré d'évolution favorable et sans aucune séquelle ont été rapportés.</p>
+        <p>En cas d'apparition de MPVI, il faut renseigner un formulaire de déclaration téléchargeable sur le site du Centre National de pharmacovigilance et de Matériovigilance (CNPM) <a href="https://www.cnpm.org.dz" target="_blank">www.cnpm.org.dz</a> et l'adresser au SEMEP qui en fera la notification à la DSP, à la Direction Générale de la Prévention et de la Promotion de la Santé, à l'INSP et au CNPM.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-info">
+    <p><strong>Source officielle d'information:</strong></p>
+    <a href="https://drive.google.com/file/d/16VJu7uG19uoiy7KT82YrTDXptvW47zXI/view?usp=drivesdk" target="_blank" class="source-link">
+      Guide de prophylaxie de la rage - Direction Générale de la Prévention et de la Promotion de la Santé (Cliquez pour voir)
+    </a>
+    
+    <p><strong>Pour corrections ou suggestions:</strong></p>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <a href="mailto:hdr.youcef@gmail.com">hdr.youcef@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <a href="tel:0673579007">0673579007</a>
+      </div>
+      <div class="contact-item">
+        <a href="https://t.me/vaccinrage" target="_blank">t.me/vaccinrage</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -271,6 +461,54 @@ function toggleEmergencyDetails() {
 // دالة لعرض/إخفاء تفاصيل الاحتياطات
 function togglePrecautionsDetails() {
   const details = document.getElementById('precautionsDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل التركيز
+function toggleConcentrationDetails() {
+  const details = document.getElementById('concentrationDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل البروتوكول الخلوي
+function toggleCellulaireDetails() {
+  const details = document.getElementById('cellulaireDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل Interchangeabilité
+function toggleInterchangeabiliteDetails() {
+  const details = document.getElementById('interchangeabiliteDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل Femme enceinte
+function toggleFemmeEnceinteDetails() {
+  const details = document.getElementById('femmeEnceinteDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل Co-administration
+function toggleCoadministrationDetails() {
+  const details = document.getElementById('coadministrationDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل Chloroquine
+function toggleChloroquineDetails() {
+  const details = document.getElementById('chloroquineDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل Soins locaux
+function toggleSoinsLocauxDetails() {
+  const details = document.getElementById('soinsLocauxDetails');
+  details.classList.toggle('hidden');
+}
+
+// دالة لعرض/إخفاء تفاصيل MPVI
+function toggleMPVIDetails() {
+  const details = document.getElementById('mpviDetails');
   details.classList.toggle('hidden');
 }
 
@@ -341,23 +579,31 @@ document.getElementById('btnResetSerum').addEventListener('click', () => {
   document.getElementById('dosageNote').classList.add('hidden');
   document.getElementById('emergencyDetails').classList.add('hidden');
   document.getElementById('precautionsDetails').classList.add('hidden');
+  document.getElementById('concentrationDetails').classList.add('hidden');
+  document.getElementById('cellulaireDetails').classList.add('hidden');
+  document.getElementById('interchangeabiliteDetails').classList.add('hidden');
+  document.getElementById('femmeEnceinteDetails').classList.add('hidden');
+  document.getElementById('coadministrationDetails').classList.add('hidden');
+  document.getElementById('chloroquineDetails').classList.add('hidden');
+  document.getElementById('soinsLocauxDetails').classList.add('hidden');
+  document.getElementById('mpviDetails').classList.add('hidden');
 });
 
 // ---------- SCHEDULES ----------
 const PROTOCOLS = {
   cellulaire: {
-    essen: {
-      name: 'Essen (IM)',
-      schedule: [0,3,7,14,28].map(d => ({ day: d, detail: '1 injection IM (1 ml)' }))
-    },
-    zagreb: {
-      name: 'Zagreb (IM)',
-      schedule: [
-        { day: 0, detail: '2 injections IM (2 sites x 1 ml)' },
-        { day: 7, detail: '1 injection IM (1 ml)' },
-        { day: 21, detail: '1 injection IM (1 ml)' }
-      ]
-    }
+  essen: {
+    name: 'Essen (IM)',
+    schedule: [0,3,7,14,28].map(d => ({ day: d, detail: '1 dose IM (deltotide)' }))
+  },
+  zagreb: {
+    name: 'Zagreb (IM)',
+    schedule: [
+      { day: 0, detail: '2 doses IM (2 sites x 1 dose)' },
+      { day: 7, detail: '1 dose IM (deltotide)' },
+      { day: 21, detail: '1 dose IM (deltotide)' }
+    ]
+  }
   },
   tissulaire: {
     grade2: {
@@ -538,11 +784,6 @@ document.getElementById('btnResetSchedule').addEventListener('click', () => {
 
 // تهيئة التاريخ الحالي
 document.getElementById('startDate').valueAsDate = new Date();
-
-// إضافة event listener للزر print (وظيفة أساسية)
-document.getElementById('btnPrint').addEventListener('click', () => {
-  window.print();
-});
 </script>
 </body>
 </html>
